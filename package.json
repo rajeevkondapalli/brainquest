@@ -1,0 +1,11 @@
+{
+  "name": "brainquest",
+  "version": "0.1.0",
+  "description": "BrainQuest - Knowledge Survival Game",
+  "main": "src/main.js",
+  "scripts": {
+    "start": "node src/main.js",
+    "dev": "node --watch src/main.js"
+  },
+  "type": "commonjs"
+}
