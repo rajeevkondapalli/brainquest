@@ -1,0 +1,299 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>BrainQuest | Knowledge Survival</title>
+
+    <meta
+        name="description"
+        content="BrainQuest - a timed knowledge survival quiz game. Answer fast, keep your streak, and survive."
+    >
+
+    <meta name="theme-color" content="#0a0614">
+    <link
+        rel="icon"
+        href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🧠</text></svg>"
+    >
+
+    <link rel="stylesheet" href="css/style.css">
+</head>
+
+<body>
+
+    <div class="bg-glow" aria-hidden="true"></div>
+
+    <button
+        class="sound-toggle"
+        id="sound-toggle"
+        type="button"
+        aria-label="Toggle sound"
+        title="Sound on / off"
+    >🔊</button>
+
+    <main id="app">
+
+        <!-- ==========================================
+             HOME
+        =========================================== -->
+
+        <section class="screen active" id="screen-home">
+
+            <div class="home-stage" id="home-stage">
+
+                <!-- decorative 3D layers (parallax orbs + rotating cube) -->
+                <div class="orb orb-1" aria-hidden="true"></div>
+                <div class="orb orb-2" aria-hidden="true"></div>
+                <div class="orb orb-3" aria-hidden="true"></div>
+
+                <div class="cube-wrap" aria-hidden="true">
+                    <div class="cube3d">
+                        <span class="cube-face face-front">🧠</span>
+                        <span class="cube-face face-back">?</span>
+                        <span class="cube-face face-right">A</span>
+                        <span class="cube-face face-left">B</span>
+                        <span class="cube-face face-top">✓</span>
+                        <span class="cube-face face-bottom">✗</span>
+                    </div>
+                </div>
+
+                <div class="home-inner">
+
+                    <div class="logo-badge">◈ KNOWLEDGE SURVIVAL</div>
+
+                    <h1 class="game-title">
+                        Brain<span>Quest</span>
+                    </h1>
+
+                    <p class="game-subtitle">
+                        Answer fast. Keep your streak. Survive all 15 seconds
+                        of every question. One wrong move ends the run.
+                    </p>
+
+                    <button class="btn btn-primary btn-lg" id="btn-play" type="button">
+                        ▶ Play
+                    </button>
+
+                    <div class="stats-strip">
+                        <div class="stat-chip">
+                            <strong id="home-best">0</strong>
+                            <span>Best Streak</span>
+                        </div>
+                    </div>
+
+                    <ul class="feature-list">
+                        <li>⏱️ 15-second countdown per question</li>
+                        <li>🔥 Two quiz modes &amp; nine subjects</li>
+                        <li>🛟 Four lifelines, two uses each</li>
+                    </ul>
+
+                </div>
+
+            </div>
+
+        </section>
+
+
+        <!-- ==========================================
+             MODE SELECT
+        =========================================== -->
+
+        <section class="screen" id="screen-mode">
+
+            <div class="panel-inner">
+
+                <div class="section-label">CHOOSE A MODE</div>
+                <h2 class="screen-title">How do you want to play?</h2>
+
+                <div class="mode-grid">
+
+                    <button class="mode-card" id="btn-mixed" type="button">
+                        <span class="mode-icon">🎲</span>
+                        <span class="mode-name">Mixed Mode</span>
+                        <span class="mode-desc">
+                            Random questions from every subject.
+                        </span>
+                    </button>
+
+                    <button class="mode-card" id="btn-subject" type="button">
+                        <span class="mode-icon">📚</span>
+                        <span class="mode-name">Subject Mode</span>
+                        <span class="mode-desc">
+                            Pick one subject and master it.
+                        </span>
+                    </button>
+
+                </div>
+
+                <button class="btn btn-ghost" id="btn-mode-back" type="button">
+                    ← Back
+                </button>
+
+            </div>
+
+        </section>
+
+
+        <!-- ==========================================
+             SUBJECT SELECT
+        =========================================== -->
+
+        <section class="screen" id="screen-subject">
+
+            <div class="panel-inner">
+
+                <div class="section-label">CHOOSE A SUBJECT</div>
+                <h2 class="screen-title">What do you want to be quizzed on?</h2>
+
+                <div class="subject-grid" id="subject-grid"></div>
+
+                <button class="btn btn-ghost" id="btn-subject-back" type="button">
+                    ← Back
+                </button>
+
+            </div>
+
+        </section>
+
+
+        <!-- ==========================================
+             GAME
+        =========================================== -->
+
+        <section class="screen" id="screen-game">
+
+            <div class="game-shell">
+
+                <!-- HUD -->
+                <header class="hud">
+
+                    <div class="hud-left">
+                        <span class="hud-mode" id="hud-mode">Mixed Mode</span>
+                        <span class="hud-qno" id="hud-qno">Question 1</span>
+                    </div>
+
+                    <div class="hud-right">
+                        <div class="streak-box">
+                            <span class="streak-value" id="hud-streak">0</span>
+                            <span class="streak-label">🔥 Streak</span>
+                        </div>
+                        <span class="hud-record" id="hud-record">Best: 0</span>
+                    </div>
+
+                </header>
+
+                <!-- Timer -->
+                <div class="timer-wrap" id="timer-wrap">
+                    <svg class="timer-svg" viewBox="0 0 120 120" aria-hidden="true">
+                        <circle class="timer-ring-bg" cx="60" cy="60" r="52"></circle>
+                        <circle class="timer-ring-fg" id="timer-ring-fg" cx="60" cy="60" r="52"></circle>
+                    </svg>
+                    <span class="timer-number" id="timer-number">15</span>
+                </div>
+
+                <!-- Question -->
+                <div class="question-card">
+                    <h2 class="question-text" id="question-text"></h2>
+                </div>
+
+                <!-- Answers -->
+                <div class="answers" id="answers"></div>
+
+                <!-- Feedback -->
+                <div class="feedback" id="feedback" role="status"></div>
+
+                <!-- Helper panel (Phone a Friend / Audience) -->
+                <div class="helper" id="helper">
+                    <h4 class="helper-title" id="helper-title"></h4>
+                    <div class="helper-body" id="helper-body"></div>
+                </div>
+
+                <!-- Lifelines -->
+                <div class="lifelines">
+
+                    <button class="lifeline" data-lifeline="fifty" type="button">
+                        <span class="lifeline-icon">✂️</span>
+                        <span class="lifeline-name">50:50</span>
+                        <span class="lifeline-count">2</span>
+                    </button>
+
+                    <button class="lifeline" data-lifeline="friend" type="button">
+                        <span class="lifeline-icon">📞</span>
+                        <span class="lifeline-name">Phone a Friend</span>
+                        <span class="lifeline-count">2</span>
+                    </button>
+
+                    <button class="lifeline" data-lifeline="audience" type="button">
+                        <span class="lifeline-icon">👥</span>
+                        <span class="lifeline-name">Ask the Audience</span>
+                        <span class="lifeline-count">2</span>
+                    </button>
+
+                    <button class="lifeline" data-lifeline="change" type="button">
+                        <span class="lifeline-icon">🔄</span>
+                        <span class="lifeline-name">Change Question</span>
+                        <span class="lifeline-count">2</span>
+                    </button>
+
+                </div>
+
+                <p class="hint">Tip: press keys <kbd>1</kbd>–<kbd>4</kbd> to answer fast.</p>
+
+            </div>
+
+        </section>
+
+
+        <!-- ==========================================
+             GAME OVER
+        =========================================== -->
+
+        <section class="screen" id="screen-over">
+
+            <div class="panel-inner over-inner">
+
+                <div class="over-badge">RUN COMPLETE</div>
+
+                <h2 class="screen-title" id="over-reason">Wrong answer!</h2>
+
+                <div class="big-score">
+                    <span id="over-streak">0</span>
+                    <small>correct in a row</small>
+                </div>
+
+                <div class="stats-strip">
+                    <div class="stat-chip">
+                        <strong id="over-best">0</strong>
+                        <span>Best Streak</span>
+                    </div>
+                </div>
+
+                <div class="record-flag" id="over-record">🏆 New Best Streak!</div>
+
+                <div class="over-buttons">
+                    <button class="btn btn-primary" id="btn-restart" type="button">
+                        ↻ Play Again
+                    </button>
+                    <button class="btn btn-ghost" id="btn-home" type="button">
+                        ⌂ Home
+                    </button>
+                </div>
+
+            </div>
+
+        </section>
+
+    </main>
+
+    <!-- Scripts: order matters (data -> lifelines -> audio -> game) -->
+    <script src="js/questions.js" defer></script>
+    <script src="js/lifelines.js" defer></script>
+    <script src="js/audio.js" defer></script>
+    <script src="js/game.js" defer></script>
+    <script src="js/effects.js" defer></script>
+
+</body>
+
+</html>
