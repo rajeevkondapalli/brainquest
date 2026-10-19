@@ -66,6 +66,10 @@
     // Game state
     // ---------------------------------------------------------
 
+    // Questions already shown in earlier rounds (this page session).
+    // Used so a fresh round prefers questions the player has not yet seen.
+    var seenAcrossRounds = new Set();
+
     var state = {
         stats: loadStats(),
         mode: null,            // "mixed" | "subject"
@@ -110,8 +114,11 @@
 
         feedback: $("feedback"),
 
+        overBadge: $("over-badge"),
+        overScreen: $("screen-over"),
         overReason: $("over-reason"),
         overStreak: $("over-streak"),
+        overScoreLabel: $("over-score-label"),
         overBest: $("over-best"),
         overRecord: $("over-record")
     };
@@ -197,6 +204,13 @@
         });
     }
 
+    function availableCount() {
+        return state.pool.filter(function (q) {
+            return !state.usedIds.has(q.id);
+        }).length;
+    }
+
+    // Returns null once every question in the pool has been shown this round.
     function drawPreparedQuestion() {
 
         var available = state.pool.filter(function (q) {
@@ -204,12 +218,20 @@
         });
 
         if (available.length === 0) {
-            state.usedIds.clear();
-            available = state.pool.slice();
+            return null;
         }
 
-        var raw = available[randInt(available.length)];
+        // Prefer questions not yet seen in earlier rounds, so each new round
+        // surfaces fresh content instead of replaying the same ones.
+        var unseen = available.filter(function (q) {
+            return !seenAcrossRounds.has(q.id);
+        });
+
+        var pickFrom = unseen.length > 0 ? unseen : available;
+        var raw = pickFrom[randInt(pickFrom.length)];
+
         state.usedIds.add(raw.id);
+        seenAcrossRounds.add(raw.id);
 
         return prepareQuestion(raw);
     }
@@ -234,11 +256,19 @@
 
     function loadQuestion(advance) {
 
+        var next = drawPreparedQuestion();
+
+        // No fresh question left - the player cleared the whole pool.
+        if (next === null) {
+            roundComplete();
+            return;
+        }
+
         if (advance) {
             state.questionNumber++;
         }
 
-        state.prepared = drawPreparedQuestion();
+        state.prepared = next;
         state.answered = false;
         state.removed = [];
 
@@ -533,6 +563,11 @@
                 disabled = true;
             }
 
+            // Cannot swap for a new question once the pool is spent.
+            if (key === "change" && availableCount() === 0) {
+                disabled = true;
+            }
+
             btn.disabled = disabled;
             btn.classList.toggle("used-up", left <= 0);
         });
@@ -546,6 +581,11 @@
 
         // Do not play the sound for a 50:50 that is already active.
         if (key === "fifty" && state.removed.length > 0) {
+            return;
+        }
+
+        // A swap is pointless if the pool has nothing left to offer.
+        if (key === "change" && availableCount() === 0) {
             return;
         }
 
@@ -602,9 +642,37 @@
 
         var isNewRecord = state.streak > state.bestAtRunStart && state.streak > 0;
 
+        ui.overBadge.textContent = "RUN COMPLETE";
+        ui.overBadge.classList.remove("win");
+        ui.overScoreLabel.textContent = "correct in a row";
+
         ui.overReason.textContent = reason === "timeout"
             ? "You ran out of time!"
             : "Wrong answer. Survival ends here!";
+
+        ui.overStreak.textContent = state.streak;
+        ui.overBest.textContent = state.stats.bestStreak;
+        ui.overRecord.classList.toggle("show", isNewRecord);
+
+        updateHomeStats();
+        showScreen("screen-over");
+    }
+
+    // Every question in the pool has been shown without losing - round won.
+    function roundComplete() {
+
+        stopTimer();
+        state.answered = true;
+
+        var isNewRecord = state.streak > state.bestAtRunStart && state.streak > 0;
+
+        ui.overBadge.textContent = "ROUND COMPLETE 🏆";
+        ui.overBadge.classList.add("win");
+        ui.overScoreLabel.textContent = "questions cleared";
+
+        ui.overReason.textContent = state.mode === "subject"
+            ? "You cleared every " + state.subject + " question!"
+            : "You cleared every question!";
 
         ui.overStreak.textContent = state.streak;
         ui.overBest.textContent = state.stats.bestStreak;

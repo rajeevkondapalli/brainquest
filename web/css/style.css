@@ -991,6 +991,24 @@ kbd {
     letter-spacing: 2px;
 }
 
+/* Shown when the player clears every question in the pool. */
+.over-badge.win {
+    border-color: var(--good);
+    color: var(--good);
+    background: var(--good-bg);
+    animation: badgePop 0.55s ease both;
+}
+
+@keyframes badgePop {
+    0%   { transform: scale(0.6); opacity: 0; }
+    60%  { transform: scale(1.12); opacity: 1; }
+    100% { transform: scale(1); opacity: 1; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .over-badge.win { animation: none; }
+}
+
 .big-score {
     display: flex;
     flex-direction: column;
