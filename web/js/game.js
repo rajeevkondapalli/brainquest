@@ -66,9 +66,38 @@
     // Game state
     // ---------------------------------------------------------
 
-    // Questions already shown in earlier rounds (this page session).
-    // Used so a fresh round prefers questions the player has not yet seen.
-    var seenAcrossRounds = new Set();
+    // Questions already shown in earlier rounds (this browser session, kept in
+    // localStorage so a page refresh does not reset the player back to square one).
+    var SEEN_KEY = "brainquest.seen.v1";
+    var SEEN_MAX = 600;
+
+    function loadSeen() {
+        try {
+            var raw = JSON.parse(localStorage.getItem(SEEN_KEY));
+            if (Array.isArray(raw)) {
+                return new Set(raw.filter(function (id) {
+                    return typeof id === "number";
+                }));
+            }
+        } catch (error) {
+            // Corrupt or unavailable storage - start fresh, play on.
+        }
+        return new Set();
+    }
+
+    function saveSeen() {
+        try {
+            // Keep the list bounded so it can never grow without limit.
+            if (seenAcrossRounds.size > SEEN_MAX) {
+                seenAcrossRounds = new Set(Array.from(seenAcrossRounds).slice(-SEEN_MAX));
+            }
+            localStorage.setItem(SEEN_KEY, JSON.stringify(Array.from(seenAcrossRounds)));
+        } catch (error) {
+            // Storage full / private mode - the run simply starts with no memory.
+        }
+    }
+
+    var seenAcrossRounds = loadSeen();
 
     var state = {
         stats: loadStats(),
@@ -232,6 +261,7 @@
 
         state.usedIds.add(raw.id);
         seenAcrossRounds.add(raw.id);
+        saveSeen();
 
         return prepareQuestion(raw);
     }

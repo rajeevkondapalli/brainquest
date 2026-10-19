@@ -47,9 +47,15 @@ saved stats, but a local server is cleaner for development.
 - **Two modes:** Mixed Mode (all subjects) and Subject Mode (pick one).
 - **Nine subjects:** Technology, Science, Mathematics, General Knowledge, History,
   plus engineering subjects **CSE, ECE, EEE, MECH**.
-- **170 questions total** — 18 per general subject and 20 per engineering subject,
-  including extra-tough expert-level facts and B.Tech engineering questions
-  (digital counters, algorithms, circuits, thermodynamics and more).
+- **375 questions across 9 subjects** — General Knowledge 76, History 58,
+  Technology 45, Science 43, CSE 40, Mathematics 33, ECE 30, EEE 25 and MECH 25.
+  The bank runs from basics up to **UPSC/IAS Prelims level** (polity, constitution,
+  economy, geography, history, science and space) and includes **55 job-interview
+  questions** (technical, aptitude and HR) plus IES-level engineering awareness.
+- **No repeated questions inside a round** — every question is used at most once, and
+  the round ends with a 🏆 **Round Complete** screen when the pool is spent. Questions
+  you have already seen are remembered (`brainquest.seen.v1`, kept across a page
+  refresh) so the next round prefers ones you have not met yet.
 - **15-second countdown** with a colour-changing ring that turns red under 5s.
 - **Countdown sound:** a soft tick every second, urgent beeps in the final 5 seconds,
   plus correct / wrong / time-up effects and a start chime. Toggle with the 🔊 button
@@ -72,7 +78,7 @@ saved stats, but a local server is cleaner for development.
 ```
 web/index.html          # All screens (home, mode, subject, game, game over)
 web/css/style.css       # Dark purple/violet theme, animations, responsive layout
-web/js/questions.js     # Question bank (170 questions, 9 subjects) + validation
+web/js/questions.js     # Question bank (375 questions, 9 subjects) + validation
 web/js/lifelines.js     # Pure lifeline logic (50:50, Phone a Friend, Audience)
 web/js/audio.js         # Web Audio sound engine (countdown + effects)
 web/js/game.js          # Game state, timer, scoring, stats, UI wiring
@@ -127,7 +133,7 @@ const questions = [
 ```
 
 > Note: the terminal version currently uses a small **starter set of 5 easy
-> questions**. The web version has the full 170-question hard bank.
+> questions**. The web version has the full 375-question bank.
 
 ---
 
