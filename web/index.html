@@ -18,7 +18,9 @@
         href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🧠</text></svg>"
     >
 
-    <link rel="stylesheet" href="css/style.css">
+    <!-- Version query = cache-buster: bump ?v= whenever an asset changes so
+         Cloudflare (max-age 14400) and browsers pick it up immediately. -->
+    <link rel="stylesheet" href="css/style.css?v=20261020">
 </head>
 
 <body>
@@ -287,12 +289,13 @@
 
     </main>
 
-    <!-- Scripts: order matters (data -> lifelines -> audio -> game) -->
-    <script src="js/questions.js" defer></script>
-    <script src="js/lifelines.js" defer></script>
-    <script src="js/audio.js" defer></script>
-    <script src="js/game.js" defer></script>
-    <script src="js/effects.js" defer></script>
+    <!-- Scripts: order matters (data -> lifelines -> audio -> game).
+         Keep ?v= in sync with the stylesheet above. -->
+    <script src="js/questions.js?v=20261020" defer></script>
+    <script src="js/lifelines.js?v=20261020" defer></script>
+    <script src="js/audio.js?v=20261020" defer></script>
+    <script src="js/game.js?v=20261020" defer></script>
+    <script src="js/effects.js?v=20261020" defer></script>
 
 </body>
 
