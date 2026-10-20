@@ -161,6 +161,20 @@
             tone(440, 0, 0.18, "square", 0.2);
             tone(330, 0.2, 0.18, "square", 0.2);
             tone(220, 0.4, 0.42, "square", 0.2);
+        },
+
+        // Round complete - celebratory fanfare.
+        // C major arpeggio (C5-E5-G5) climbing to a bright, ringing C6,
+        // doubled by E6/G6 above it, over a low root for weight.
+        victory: function () {
+            tone(261.63, 0, 0.9, "sine", 0.1);      // low C4 root
+            tone(523.25, 0, 0.13, "triangle", 0.2);   // C5
+            tone(523.25, 0.14, 0.13, "triangle", 0.2); // C5 (fanfare repeat)
+            tone(659.25, 0.28, 0.16, "triangle", 0.2); // E5
+            tone(783.99, 0.44, 0.16, "triangle", 0.2); // G5
+            tone(1046.5, 0.6, 0.55, "sine", 0.24);     // C6 landing note
+            tone(1318.5, 0.66, 0.5, "sine", 0.16);     // E6 shimmer
+            tone(1568.0, 0.72, 0.46, "triangle", 0.12); // G6 sparkle
         }
     };
 

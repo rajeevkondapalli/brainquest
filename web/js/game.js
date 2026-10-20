@@ -694,6 +694,9 @@
         stopTimer();
         state.answered = true;
 
+        // Celebratory fanfare for clearing the whole pool.
+        SFX.victory();
+
         var isNewRecord = state.streak > state.bestAtRunStart && state.streak > 0;
 
         ui.overBadge.textContent = "ROUND COMPLETE 🏆";
