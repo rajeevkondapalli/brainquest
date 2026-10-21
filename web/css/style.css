@@ -770,13 +770,14 @@ button {
     line-height: 1.35;
 }
 
-/* ---- Bilingual (Telugu + English) -------------------------
-   Telugu is the primary line and sits above the English one, both for the
-   question and for each option. Questions with no translation in
-   js/questions-te.js fall back to English-only and none of this applies. */
+/* ---- Telugu questions, English interface ------------------
+   Questions and their options render in Telugu only. The English text stays in
+   the markup purely as a fallback: any question without a translation in
+   js/questions-te.js automatically shows English instead. Everything else in
+   the UI (HUD, buttons, screens) stays English. */
 
 .question-text-te {
-    margin: 0 0 8px;
+    margin: 0;
     font-size: clamp(1.15rem, 2.8vw, 1.6rem);
     font-weight: 800;
     line-height: 1.6;
@@ -787,11 +788,9 @@ button {
     display: none;
 }
 
-/* The English question under a Telugu one becomes the secondary line. */
+/* Telugu is present, so the English fallback line is not shown. */
 .question-text-te:not([hidden]) + .question-text {
-    font-size: clamp(0.85rem, 1.9vw, 1.05rem);
-    font-weight: 600;
-    opacity: 0.66;
+    display: none;
 }
 
 .answer-body {
@@ -802,14 +801,13 @@ button {
 }
 
 .answer-text-te {
-    font-size: 0.98rem;
-    font-weight: 700;
+    font-size: 1rem;
+    font-weight: 600;
     line-height: 1.45;
 }
 
 .answer-text-te + .answer-text {
-    font-size: 0.84rem;
-    opacity: 0.62;
+    display: none;
 }
 
 .answer.correct {
