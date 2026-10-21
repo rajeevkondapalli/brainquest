@@ -770,6 +770,48 @@ button {
     line-height: 1.35;
 }
 
+/* ---- Bilingual (Telugu + English) -------------------------
+   Telugu is the primary line and sits above the English one, both for the
+   question and for each option. Questions with no translation in
+   js/questions-te.js fall back to English-only and none of this applies. */
+
+.question-text-te {
+    margin: 0 0 8px;
+    font-size: clamp(1.15rem, 2.8vw, 1.6rem);
+    font-weight: 800;
+    line-height: 1.6;
+    text-align: center;
+}
+
+.question-text-te[hidden] {
+    display: none;
+}
+
+/* The English question under a Telugu one becomes the secondary line. */
+.question-text-te:not([hidden]) + .question-text {
+    font-size: clamp(0.85rem, 1.9vw, 1.05rem);
+    font-weight: 600;
+    opacity: 0.66;
+}
+
+.answer-body {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+    min-width: 0;
+}
+
+.answer-text-te {
+    font-size: 0.98rem;
+    font-weight: 700;
+    line-height: 1.45;
+}
+
+.answer-text-te + .answer-text {
+    font-size: 0.84rem;
+    opacity: 0.62;
+}
+
 .answer.correct {
     border-color: var(--good);
     background: var(--good-bg);

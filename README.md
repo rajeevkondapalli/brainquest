@@ -56,7 +56,15 @@ saved stats, but a local server is cleaner for development.
   the round ends with a 🏆 **Round Complete** screen when the pool is spent. Questions
   you have already seen are remembered (`brainquest.seen.v1`, kept across a page
   refresh) so the next round prefers ones you have not met yet.
-- **15-second countdown** with a colour-changing ring that turns red under 5s.
+- **Bilingual: Telugu + English** — every question and all four options are shown in
+  Telugu first, with the English underneath. Translations live in
+  `web/js/questions-te.js`, keyed by question id and kept in the same option order as
+  the English bank (the answer is chosen by *position*, so that order is exactly what
+  keeps the answer key correct even after options are shuffled). Numbers, acronyms,
+  brand names and standard technical terms deliberately stay in Latin script, as in
+  normal Telugu-medium exam material. A question with no translation simply falls back
+  to English-only.
+- **30-second countdown** with a colour-changing ring that turns red under 5s.
 - **Countdown sound:** a soft tick every second, urgent beeps in the final 5 seconds,
   plus correct / wrong / time-up effects and a start chime. Toggle with the 🔊 button
   (top-right); your choice is remembered. No audio files — sounds are generated with
@@ -79,6 +87,7 @@ saved stats, but a local server is cleaner for development.
 web/index.html          # All screens (home, mode, subject, game, game over)
 web/css/style.css       # Dark purple/violet theme, animations, responsive layout
 web/js/questions.js     # Question bank (375 questions, 9 subjects) + validation
+web/js/questions-te.js  # Telugu translations for every question, keyed by id
 web/js/lifelines.js     # Pure lifeline logic (50:50, Phone a Friend, Audience)
 web/js/audio.js         # Web Audio sound engine (countdown + effects)
 web/js/game.js          # Game state, timer, scoring, stats, UI wiring
@@ -147,6 +156,7 @@ BrainQuest/
 │   │   └── style.css
 │   └── js/
 │       ├── questions.js
+│       ├── questions-te.js
 │       ├── lifelines.js
 │       ├── audio.js
 │       ├── game.js

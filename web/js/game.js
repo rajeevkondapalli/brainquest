@@ -9,13 +9,14 @@
 
     var BrainQuest = window.BrainQuest;
     var QUESTION_BANK = BrainQuest.QUESTION_BANK;
+    var TELUGU = BrainQuest.TELUGU || {};
     var SUBJECTS = BrainQuest.SUBJECTS;
     var Lifelines = BrainQuest.Lifelines;
     var SFX = BrainQuest.Audio;
     var shuffle = BrainQuest.utils.shuffle;
     var randInt = BrainQuest.utils.randInt;
 
-    var QUESTION_TIME = 15000; // 15 seconds per question
+    var QUESTION_TIME = 30000; // 30 seconds per question
     var LIFELINES_PER_RUN = 2;
     var STORAGE_KEY = "brainquest.stats.v1";
     var LIFELINE_KEYS = ["fifty", "friend", "audience", "change"];
@@ -135,6 +136,7 @@
         timerWrap: $("timer-wrap"),
 
         questionText: $("question-text"),
+        questionTextTe: $("question-text-te"),
         answers: $("answers"),
 
         helper: $("helper"),
@@ -270,7 +272,7 @@
     function prepareQuestion(raw) {
 
         var mapped = raw.options.map(function (text, index) {
-            return { text: text, correct: index === raw.answer };
+            return { text: text, correct: index === raw.answer, source: index };
         });
 
         var shuffled = shuffle(mapped);
@@ -280,6 +282,9 @@
             subject: raw.subject,
             question: raw.question,
             options: shuffled.map(function (o) { return o.text; }),
+            // Original bank position of each option, so translations (which are
+            // keyed to the un-shuffled order) can follow the shuffle.
+            sources: shuffled.map(function (o) { return o.source; }),
             answer: shuffled.findIndex(function (o) { return o.correct; })
         };
     }
@@ -317,10 +322,23 @@
 
     function renderQuestion() {
 
-        ui.questionText.textContent = state.prepared.question;
+        var prepared = state.prepared;
+        var tel = TELUGU[prepared.id];
+
+        // Telugu sits above the English; questions without a translation fall
+        // back to English-only.
+        if (tel && tel.q) {
+            ui.questionTextTe.textContent = tel.q;
+            ui.questionTextTe.hidden = false;
+        } else {
+            ui.questionTextTe.textContent = "";
+            ui.questionTextTe.hidden = true;
+        }
+
+        ui.questionText.textContent = prepared.question;
         ui.answers.innerHTML = "";
 
-        state.prepared.options.forEach(function (option, index) {
+        prepared.options.forEach(function (option, index) {
 
             var btn = document.createElement("button");
             btn.className = "answer";
@@ -331,12 +349,30 @@
             letter.className = "answer-letter";
             letter.textContent = "ABCD"[index];
 
+            // `sources` maps this shuffled slot back to the bank order the
+            // translations were written against.
+            var source = prepared.sources ? prepared.sources[index] : index;
+            var telOption = tel && tel.o ? tel.o[source] : null;
+
+            btn.appendChild(letter);
+
+            // Text column so the Telugu line can stack above the English one.
+            var body = document.createElement("span");
+            body.className = "answer-body";
+
+            if (telOption) {
+                var telText = document.createElement("span");
+                telText.className = "answer-text-te";
+                telText.textContent = telOption;
+                body.appendChild(telText);
+            }
+
             var text = document.createElement("span");
             text.className = "answer-text";
             text.textContent = option;
 
-            btn.appendChild(letter);
-            btn.appendChild(text);
+            body.appendChild(text);
+            btn.appendChild(body);
 
             btn.addEventListener("click", function () {
                 handleAnswer(index);
